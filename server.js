@@ -1,8 +1,11 @@
-const express = require('express');
 const fs = require('fs');
 const path = require('path');
+
+const express = require('express');
 const app = express();
+
 const PORT = process.env.PORT || 3000;
+
 const savedNotes = require('./Develop/db/db.json');
 
 app.use(express.static('public'))
@@ -42,9 +45,7 @@ app.post('/api/notes', (req, res) => {
     res.json(newNote);
 });
 
-app.listen(
-    PORT, 
-    () => {
+app.listen(PORT, () => {
     console.log(`Application running at ${PORT}!`);
 });
 
