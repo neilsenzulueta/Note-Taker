@@ -1,11 +1,10 @@
 const PORT = process.env.PORT || 8081;
 const fs = require('fs');
 const path = require('path');
-
 const express = require('express');
 const app = express();
 
-const savedNotes = require('./db/db.json');
+let savedNotes = require('./db/db.json');
 
 app.use(express.static('public'))
 app.use(express.json());
@@ -42,6 +41,23 @@ function createNewNote(body, notesArray) {
 app.post('/api/notes', (req, res) => {
     const newNote = createNewNote(req.body, savedNotes);
     res.json(newNote);
+});
+
+function deleteNote(id, notesArray) {
+    const filteredNotes = notesArray.filter(note => note.id !== id);
+    fs.writeFileSync(
+        path.join(__dirname, './db/db.json'),
+        JSON.stringify(filteredNotes, null, 2)
+    );
+}
+
+app.delete('/api/notes/:id', (req, res) => {
+    deleteNote(req.params.id, savedNotes);
+    res.json(true);
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.listen(PORT, () => {
