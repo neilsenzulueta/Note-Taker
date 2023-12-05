@@ -44,13 +44,26 @@ app.post('/api/notes', (req, res) => {
 });
 
 function deleteNote(id, notesArray) {
+    for (let i = 0; i < notesArray.length; i++) {
+        if (notesArray[i].id == id) {
+            notesArray.splice(i, 1);
+            fs.writeFileSync(
+                path.join(__dirname, './db/db.json'),
+                JSON.stringify(notesArray, null, 2)
+            );
+            break;
+        }
+    }
+}
+/*
+function deleteNote(id, notesArray) {
     const filteredNotes = notesArray.filter(note => note.id !== id);
     fs.writeFileSync(
         path.join(__dirname, './db/db.json'),
         JSON.stringify(filteredNotes, null, 2)
     );
 }
-
+*/
 app.delete('/api/notes/:id', (req, res) => {
     deleteNote(req.params.id, savedNotes);
     res.json(true);
